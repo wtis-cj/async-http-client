@@ -342,7 +342,6 @@ public final class NettyRequestSender {
                                                                AsyncHandler<T> asyncHandler) {
 
     Uri uri = request.getUri();
-    final Promise<List<InetSocketAddress>> promise = ImmediateEventExecutor.INSTANCE.newPromise();
 
     if (proxy != null && !proxy.isIgnoredForHost(uri.getHost()) && proxy.getProxyType().isHttp()) {
       int port = uri.isSecured() ? proxy.getSecuredPort() : proxy.getPort();
@@ -359,7 +358,12 @@ public final class NettyRequestSender {
       if (request.getAddress() != null) {
         // bypass resolution
         InetSocketAddress inetSocketAddress = new InetSocketAddress(request.getAddress(), port);
+        final Promise<List<InetSocketAddress>> promise = ImmediateEventExecutor.INSTANCE.newPromise();
         return promise.setSuccess(singletonList(inetSocketAddress));
+      } else if (proxy != null && !proxy.isUseLocalDns()) {
+        // proxy use remote dns resolver, bypass resolution
+        final Promise<List<InetSocketAddress>> promise = ImmediateEventExecutor.INSTANCE.newPromise();
+        return promise.setSuccess(singletonList(unresolvedRemoteAddress));
       } else {
         return RequestHostnameResolver.INSTANCE.resolve(request.getNameResolver(), unresolvedRemoteAddress, asyncHandler);
       }

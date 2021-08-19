@@ -40,22 +40,24 @@ public class ProxyServer {
   private final Realm realm;
   private final List<String> nonProxyHosts;
   private final ProxyType proxyType;
+  private final boolean useLocalDns;
   private final Function<Request, HttpHeaders> customHeaders;
 
   public ProxyServer(String host, int port, int securedPort, Realm realm, List<String> nonProxyHosts,
-                     ProxyType proxyType, Function<Request, HttpHeaders> customHeaders) {
+                     ProxyType proxyType, boolean useLocalDns, Function<Request, HttpHeaders> customHeaders) {
     this.host = host;
     this.port = port;
     this.securedPort = securedPort;
     this.realm = realm;
     this.nonProxyHosts = nonProxyHosts;
     this.proxyType = proxyType;
+    this.useLocalDns = useLocalDns;
     this.customHeaders = customHeaders;
   }
 
   public ProxyServer(String host, int port, int securedPort, Realm realm, List<String> nonProxyHosts,
-                     ProxyType proxyType) {
-    this(host, port, securedPort, realm, nonProxyHosts, proxyType, null);
+                     boolean useLocalDns, ProxyType proxyType) {
+    this(host, port, securedPort, realm, nonProxyHosts, proxyType, useLocalDns, null);
   }
 
   public String getHost() {
@@ -80,6 +82,10 @@ public class ProxyServer {
 
   public ProxyType getProxyType() {
     return proxyType;
+  }
+
+  public boolean isUseLocalDns() {
+    return useLocalDns;
   }
 
   public Function<Request, HttpHeaders> getCustomHeaders() {
@@ -133,6 +139,7 @@ public class ProxyServer {
     private Realm realm;
     private List<String> nonProxyHosts;
     private ProxyType proxyType;
+    private boolean useLocalDns;
     private Function<Request, HttpHeaders> customHeaders;
 
     public Builder(String host, int port) {
@@ -173,6 +180,11 @@ public class ProxyServer {
       return this;
     }
 
+    public Builder useLocalDns(boolean useLocalDns) {
+      this.useLocalDns = useLocalDns;
+      return this;
+    }
+
     public Builder setCustomHeaders(Function<Request, HttpHeaders> customHeaders) {
       this.customHeaders = customHeaders;
       return this;
@@ -182,7 +194,7 @@ public class ProxyServer {
       List<String> nonProxyHosts = this.nonProxyHosts != null ? Collections.unmodifiableList(this.nonProxyHosts)
               : Collections.emptyList();
       ProxyType proxyType = this.proxyType != null ? this.proxyType : ProxyType.HTTP;
-      return new ProxyServer(host, port, securedPort, realm, nonProxyHosts, proxyType, customHeaders);
+      return new ProxyServer(host, port, securedPort, realm, nonProxyHosts, proxyType, useLocalDns, customHeaders);
     }
   }
 }

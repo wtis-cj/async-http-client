@@ -36,6 +36,7 @@ import io.netty.handler.proxy.Socks5ProxyHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.resolver.NameResolver;
+import io.netty.resolver.NoopAddressResolverGroup;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.*;
 import io.netty.util.internal.PlatformDependent;
@@ -410,6 +411,10 @@ public class ChannelManager {
 
     } else if (proxy != null && proxy.getProxyType().isSocks()) {
       Bootstrap socksBootstrap = httpBootstrap.clone();
+      if (!proxy.isUseLocalDns()) {
+        // socks proxy use remote dns resolver
+        socksBootstrap.resolver(NoopAddressResolverGroup.INSTANCE);
+      }
       ChannelHandler httpBootstrapHandler = socksBootstrap.config().handler();
 
       nameResolver.resolve(proxy.getHost()).addListener((Future<InetAddress> whenProxyAddress) -> {
@@ -451,7 +456,13 @@ public class ChannelManager {
       });
 
     } else {
-      promise.setSuccess(httpBootstrap);
+      Bootstrap newHttpBootstrap = httpBootstrap;
+      if (proxy != null && !proxy.isUseLocalDns()) {
+        // http proxy use remote dns resolver
+        newHttpBootstrap = newHttpBootstrap.clone();
+        newHttpBootstrap.resolver(NoopAddressResolverGroup.INSTANCE);
+      }
+      promise.setSuccess(newHttpBootstrap);
     }
 
     return promise;
