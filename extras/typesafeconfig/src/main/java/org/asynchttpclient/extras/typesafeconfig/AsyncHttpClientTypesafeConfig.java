@@ -125,6 +125,11 @@ public class AsyncHttpClientTypesafeConfig implements AsyncHttpClientConfig {
   }
 
   @Override
+  public boolean isAllowDuplicateContentLengths() {
+    return getBooleanOpt(ALLOW_DUPLICATE_CONTENT_LENGTHS_CONFIG).orElse(defaultAllowDuplicateContentLengths());
+  }
+
+  @Override
   public ThreadFactory getThreadFactory() {
     return null;
   }

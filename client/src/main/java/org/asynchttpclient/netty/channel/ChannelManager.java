@@ -327,9 +327,11 @@ public class ChannelManager {
             config.getHttpClientCodecMaxInitialLineLength(),
             config.getHttpClientCodecMaxHeaderSize(),
             config.getHttpClientCodecMaxChunkSize(),
-            false,
+            HttpClientCodec.DEFAULT_FAIL_ON_MISSING_RESPONSE,
             config.isValidateResponseHeaders(),
-            config.getHttpClientCodecInitialBufferSize());
+            config.getHttpClientCodecInitialBufferSize(),
+            HttpClientCodec.DEFAULT_PARSE_HTTP_AFTER_CONNECT_REQUEST,
+            config.isAllowDuplicateContentLengths());
   }
 
   private SslHandler createSslHandler(String peerHost, int peerPort) {

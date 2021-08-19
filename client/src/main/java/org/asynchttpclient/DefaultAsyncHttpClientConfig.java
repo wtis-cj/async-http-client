@@ -54,6 +54,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
   private final int maxRedirects;
   private final boolean strict302Handling;
   private final boolean compressionEnforced;
+  private final boolean allowDuplicateContentLengths;
   private final String userAgent;
   private final Realm realm;
   private final int maxRequestRetry;
@@ -142,6 +143,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
                                        int maxRedirects,
                                        boolean strict302Handling,
                                        boolean compressionEnforced,
+                                       boolean allowDuplicateContentLengths,
                                        String userAgent,
                                        Realm realm,
                                        int maxRequestRetry,
@@ -230,6 +232,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
     this.maxRedirects = maxRedirects;
     this.strict302Handling = strict302Handling;
     this.compressionEnforced = compressionEnforced;
+    this.allowDuplicateContentLengths = allowDuplicateContentLengths;
     this.userAgent = userAgent;
     this.realm = realm;
     this.maxRequestRetry = maxRequestRetry;
@@ -340,6 +343,11 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
   @Override
   public boolean isCompressionEnforced() {
     return compressionEnforced;
+  }
+
+  @Override
+  public boolean isAllowDuplicateContentLengths() {
+    return allowDuplicateContentLengths;
   }
 
   @Override
@@ -702,6 +710,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
     private int maxRedirects = defaultMaxRedirects();
     private boolean strict302Handling = defaultStrict302Handling();
     private boolean compressionEnforced = defaultCompressionEnforced();
+    private boolean allowDuplicateContentLengths = defaultAllowDuplicateContentLengths();
     private String userAgent = defaultUserAgent();
     private Realm realm;
     private int maxRequestRetry = defaultMaxRequestRetry();
@@ -793,6 +802,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
       maxRedirects = config.getMaxRedirects();
       strict302Handling = config.isStrict302Handling();
       compressionEnforced = config.isCompressionEnforced();
+      allowDuplicateContentLengths = config.isAllowDuplicateContentLengths();
       userAgent = config.getUserAgent();
       realm = config.getRealm();
       maxRequestRetry = config.getMaxRequestRetry();
@@ -887,6 +897,11 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
 
     public Builder setCompressionEnforced(boolean compressionEnforced) {
       this.compressionEnforced = compressionEnforced;
+      return this;
+    }
+
+    public Builder setAllowDuplicateContentLengths(boolean allowDuplicateContentLengths) {
+      this.allowDuplicateContentLengths = allowDuplicateContentLengths;
       return this;
     }
 
@@ -1303,6 +1318,7 @@ public class DefaultAsyncHttpClientConfig implements AsyncHttpClientConfig {
               maxRedirects,
               strict302Handling,
               compressionEnforced,
+              allowDuplicateContentLengths,
               userAgent,
               realm,
               maxRequestRetry,

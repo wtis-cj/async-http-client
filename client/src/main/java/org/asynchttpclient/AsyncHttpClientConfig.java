@@ -142,6 +142,16 @@ public interface AsyncHttpClientConfig {
   boolean isCompressionEnforced();
 
   /**
+   * When set to {@code false}, will reject any messages that contain multiple Content-Length header fields.
+   * When set to {@code true}, will allow multiple Content-Length headers only if they are all the same decimal value.
+   * The duplicated field-values will be replaced with a single valid Content-Length field.
+   * See <a href="https://tools.ietf.org/html/rfc7230#section-3.3.2">RFC 7230, Section 3.3.2</a>.
+   *
+   * @return whether multiple content-length headers are allowed
+   */
+  boolean isAllowDuplicateContentLengths();
+
+  /**
    * Return the {@link java.util.concurrent.ThreadFactory} an {@link AsyncHttpClient} use for handling asynchronous response.
    *
    * @return the {@link java.util.concurrent.ThreadFactory} an {@link AsyncHttpClient} use for handling asynchronous response. If no {@link ThreadFactory} has been explicitly
