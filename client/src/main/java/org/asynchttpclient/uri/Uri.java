@@ -143,6 +143,9 @@ public class Uri {
         sb.append(path);
       if (query != null)
         sb.append('?').append(query);
+      if (fragment != null) {
+        sb.append('#').append(fragment);
+      }
       url = sb.toString();
       sb.setLength(0);
     }
@@ -166,12 +169,17 @@ public class Uri {
 
   public String toRelativeUrl() {
     StringBuilder sb = StringBuilderPool.DEFAULT.stringBuilder();
-    if (MiscUtils.isNonEmpty(path))
+    if (MiscUtils.isNonEmpty(path)) {
       sb.append(path);
-    else
+    } else {
       sb.append('/');
-    if (query != null)
+    }
+    if (query != null) {
       sb.append('?').append(query);
+    }
+    if (fragment != null) {
+      sb.append('#').append(fragment);
+    }
 
     return sb.toString();
   }
